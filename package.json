@@ -1,7 +1,7 @@
 {
   "name": "weatherbot",
   "version": "1.0.0",
-  "description": "weather bot for discord",
+  "description": "weather bot for discord, in development",
   "main": "index.js",
   "scripts": {
     "test": "jest"
