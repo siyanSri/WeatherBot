@@ -1,0 +1,12 @@
+!location
+return current conditions (done)
+
+!location five
+return conditions for all days (almost done)
+
+!location less
+return just temp and cloud cover (not done)
+
+!location more 
+return detailed current (not done)
+ 
