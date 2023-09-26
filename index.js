@@ -62,20 +62,19 @@ function replyFor(info){
   const response = [];
   var date = new Date();
   
-
   for(let i = 0; i<5; i++){
     const dayCount = date.toLocaleString('en-us', {  weekday: 'long' });
-    console.log(dayCount)
     let day = (
       
         '\nOn '+ dayCount.toString() + 
         '\nTemp is ' + Math.round(info[i][0]).toString() + '°C' + 
-        '\nSky is currently ' + cloudCover(info[i][2]) +
-        '\nPercipitaion is ' + info[i][3].toString() + '%' +
-        '\nHumidity is ' + info[i][4].toString() + '%' +
-        '\nWind speed is ' + Math.round(info[i][5]*3.6).toString() + 'kph'
+        '\nSky is currently ' + cloudCover(info[i][1]) +
+        '\nPercipitaion is ' + info[i][2].toString() + '%' +
+        '\nHumidity is ' + info[i][3].toString() + '%' +
+        '\nWind speed is ' + Math.round(info[i][4]*3.6) + 'kph'
     );
-      response.push(day);
+    response.push(day);
+    date.setDate(date.getDate() + 1);
   }
 
   return response.join('\n');
@@ -150,16 +149,6 @@ async function forcast(location) {
     throw error; // Re-throw the error to handle it at the caller's level
   }
 }
-
-// Usage of the apiFetch function
-// async function currTemp(name) {
-//   try {
-//     const temperature = await apiFetch(name);
-//     console.log('Temperature:', temperature);
-//   } catch (error) {
-//     console.error('An error occurred:', error);
-//   }
-// }
 
 
 

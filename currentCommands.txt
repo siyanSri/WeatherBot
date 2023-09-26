@@ -1,8 +1,8 @@
 !location
 return current conditions (done)
 
-!location five
-return conditions for all days (almost done)
+!location forcast
+return conditions for all days (done)
 
 !location less
 return just temp and cloud cover (not done)
