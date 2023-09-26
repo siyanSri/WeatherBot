@@ -5,8 +5,8 @@ return current conditions (done)
 return conditions for all days (done)
 
 !location less
-return just temp and cloud cover (not done)
+return just temp and cloud cover (done)
 
 !location more 
-return detailed current (not done)
+return detailed current (done)
  
