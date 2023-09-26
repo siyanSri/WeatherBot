@@ -25,17 +25,29 @@ client.on("messageCreate", async (message) => {
       const location = msg[0].charAt(0).toUpperCase() + msg[0].slice(1);
       const command = msg[1];
       if(cities[location] == 1){
+        
+        //default reply
         if(msg.length == 1){
           // Call the main function to initiate the API fetch
           const curr = await currTemp(location);
-          message.reply(replyCur(curr));
+          message.reply(replyCur(curr,1));
         }
+        
+        //extra commands
         else if(msg.length == 2){
           switch(command){
             case 'forcast':
               let cast = await forcast(location);
               message.reply(replyFor(cast));
               break;
+            case 'less':
+              let less = await currTemp(location,2);
+              message.reply(replyCur(less,2));
+              break;
+            case 'more':
+              let more = await currTemp(location,3);
+              message.reply(replyCur(more,3));
+              break;  
             default:
               message.reply('Command not found');  
           }
@@ -47,14 +59,38 @@ client.on("messageCreate", async (message) => {
     }  
   });
 
-function replyCur(info){
-  const response = (
-      'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
-      '\nSky is currently ' + cloudCover(info[2]) +
-      '\nPercipitaion is ' + info[3].toString() + '%' +
-      '\nHumidity is ' + info[4].toString() + '%' +
-      '\nWind speed is ' + Math.round(info[5]*3.6).toString() + 'kph'
-  );
+function replyCur(info, command){
+  var response;
+  
+  switch(command){
+    case 1:
+      response = (
+          'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
+          '\nSky is currently ' + cloudCover(info[2]) +
+          '\nPercipitaion is ' + info[3].toString() + '%' +
+          '\nHumidity is ' + info[4].toString() + '%' +
+          '\nWind speed is ' + Math.round(info[5]*3.6).toString() + 'kph'
+      );
+      break;
+    case 2:
+      response = (
+        'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
+        '\nSky is currently ' + cloudCover(info[2])
+      );
+      break;
+    case 3: 
+      response = (
+        'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
+        '\nSky is currently ' + cloudCover(info[2]) +
+        '\nPercipitaion is ' + info[3].toString() + '%' +
+        '\nHumidity is ' + info[4].toString() + '%' +
+        '\nWind speed is ' + Math.round(info[5]*3.6).toString() + 'kph' +
+        '\nWind gust is ' + Math.round(info[6]*3.6).toString() + 'kph' + 
+        '\nUV index ' + info[7].toString() + '/11'
+      );
+      break;    
+
+  }  
   return response
 }
 
@@ -67,11 +103,11 @@ function replyFor(info){
     let day = (
       
         '\nOn '+ dayCount.toString() + 
-        '\nTemp is ' + Math.round(info[i][0]).toString() + '°C' + 
-        '\nSky is currently ' + cloudCover(info[i][1]) +
-        '\nPercipitaion is ' + info[i][2].toString() + '%' +
-        '\nHumidity is ' + info[i][3].toString() + '%' +
-        '\nWind speed is ' + Math.round(info[i][4]*3.6) + 'kph'
+        '\nTemp will be ' + Math.round(info[i][0]).toString() + '°C' + 
+        '\nSky will be ' + cloudCover(info[i][1]) +
+        '\nPercipitaion will be ' + info[i][2].toString() + '%' +
+        '\nHumidity will be ' + info[i][3].toString() + '%' +
+        '\nWind speed will be ' + Math.round(info[i][4]*3.6) + 'kph'
     );
     response.push(day);
     date.setDate(date.getDate() + 1);
@@ -106,10 +142,13 @@ async function currTemp(location) {
     const obj = await res.json();
     const condition = [];
     condition.push(obj['data']['values']['temperature']); //current temp
+    condition.push(obj['data']['values']['temperatureApparent']); //current temp feels like
     condition.push(obj['data']['values']['cloudCover']); //cloud cover
     condition.push(obj['data']['values']['precipitationProbability']); //precipitaion
     condition.push(obj['data']['values']['humidity']); //humidity
     condition.push(obj['data']['values']['windSpeed']); //wind
+    condition.push(obj['data']['values']['windGust']); //wind gust
+    condition.push(obj['data']['values']['uvIndex']); //UV rating
     // Return the temperature data
     return condition;
   } catch (error) {
