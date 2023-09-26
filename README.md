@@ -14,7 +14,7 @@ Weather bot for Discord.
 
 ## Description
 
-WeatherBot is a Discord bot that provides weather information. It is currently in development.
+WeatherBot is a Discord bot that provides weather information. 
 
 ## Installation
 
