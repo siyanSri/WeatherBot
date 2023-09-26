@@ -33,7 +33,7 @@ To get started with WeatherBot, follow these steps:
 3. Set up environment variables:
 Create a `.env` file in the project root directory and add the following:
    ```sh
-   CLIENT_TOKEN = your_discord_bot_token
+   CLIENT_TOKEN = your discord bot token
    WEATHER_KEY = tommorow.io api token
 4. Start the bot:
    ```sh
