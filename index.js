@@ -1,8 +1,9 @@
 require('dotenv').config(); 
 
 const { Client, GatewayIntentBits } = require('discord.js');
-const cities = require("cities-list");
+const cities = require("cities-list");// city list https://npm.io/package/cities-list
 
+//specify client requirments 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -26,7 +27,7 @@ client.on("messageCreate", async (message) => {
       const command = msg[1];
       if(cities[location] == 1){
         
-        //default reply
+        //default reply, Current temp default
         if(msg.length == 1){
           // Call the main function to initiate the API fetch
           const curr = await currTemp(location);
@@ -36,10 +37,14 @@ client.on("messageCreate", async (message) => {
         //extra commands
         else if(msg.length == 2){
           switch(command){
-            case 'forcast':
+            
+            //FORCAST
+            case 'forcast': 
               let cast = await forcast(location);
               message.reply(replyFor(cast));
               break;
+            
+            //Current Temp, specific
             case 'less':
               let less = await currTemp(location,2);
               message.reply(replyCur(less,2));
@@ -48,7 +53,9 @@ client.on("messageCreate", async (message) => {
               let more = await currTemp(location,3);
               message.reply(replyCur(more,3));
               break;  
-            default:
+            
+            //Command not found
+              default:
               message.reply('Command not found');  
           }
         }
@@ -59,10 +66,13 @@ client.on("messageCreate", async (message) => {
     }  
   });
 
+
+//Replies for Current commands  
 function replyCur(info, command){
   var response;
   
   switch(command){
+    //default response
     case 1:
       response = (
           'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
@@ -72,12 +82,15 @@ function replyCur(info, command){
           '\nWind speed is ' + Math.round(info[5]*3.6).toString() + 'kph'
       );
       break;
+    //Current 'less' command
     case 2:
       response = (
         'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
         '\nSky is currently ' + cloudCover(info[2])
       );
       break;
+    
+    //Current 'more' command
     case 3: 
       response = (
         'Current Temp is ' + Math.round(info[0]).toString() + '°C' + ' and feels like ' + Math.round(info[1]).toString() + '°C' +
@@ -94,6 +107,7 @@ function replyCur(info, command){
   return response
 }
 
+//reply Forcast
 function replyFor(info){
   const response = [];
   var date = new Date();
@@ -117,6 +131,7 @@ function replyFor(info){
 }
 
 
+//Cloud cover convert from % to String
 function cloudCover(percent){
   if(percent < 10)
     return 'Clear'
@@ -130,6 +145,7 @@ function cloudCover(percent){
     return 'Overcast'
 }
 
+//Fetch Current Temp
 async function currTemp(location) {
   const options = { method: 'GET', headers: { accept: 'application/json' } };
   const url = 'https://api.tomorrow.io/v4/weather/realtime?location='+ location +'&units=metric&apikey=' + process.env.WEATHER_TOKEN;
@@ -157,6 +173,7 @@ async function currTemp(location) {
   }
 }
 
+//Fetch Forcast temp
 async function forcast(location) {
   const options = { method: 'GET', headers: { accept: 'application/json' } };
   const url = 'https://api.tomorrow.io/v4/weather/forecast?location='+ location +'&units=metric&apikey=' + process.env.WEATHER_TOKEN;
@@ -191,5 +208,5 @@ async function forcast(location) {
 
 
 
-
+//Discord login
 client.login(process.env.CLIENT_TOKEN);
